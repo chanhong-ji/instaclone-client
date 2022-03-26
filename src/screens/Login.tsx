@@ -7,6 +7,7 @@ import SocialLogin from "../components/auth/SocialLogin";
 import PageTitle from "../components/PageTitle";
 import { gql, useMutation } from "@apollo/client";
 import FormError from "../components/FormError";
+import { getUserLogin } from "../apollo";
 
 const LOGIN_MUTATION = gql`
   mutation login($username: String!, $password: String!) {
@@ -39,7 +40,10 @@ function Login() {
         login: { ok, error, token },
       } = data;
       if (!ok) {
-        setError("result", { message: error });
+        return setError("result", { message: error });
+      }
+      if (token) {
+        getUserLogin(token);
       }
     },
   });
