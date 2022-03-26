@@ -7,24 +7,28 @@ import Login from "./screens/Login";
 import NotFound from "./screens/404";
 import Signup from "./screens/Signup";
 import { HelmetProvider } from "react-helmet-async";
+import { ApolloProvider } from "@apollo/client";
+import { client } from "./apollo";
 
 function App() {
   return (
-    <HelmetProvider>
-      <ThemeProvider theme={lightTheme}>
-        <GlobalStyles />
-        <BrowserRouter>
-          <Routes>
-            <Route element={<Layout />}>
-              <Route index element={<Home />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/signup" element={<Signup />} />
-            </Route>
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
-      </ThemeProvider>
-    </HelmetProvider>
+    <ApolloProvider client={client}>
+      <HelmetProvider>
+        <ThemeProvider theme={lightTheme}>
+          <GlobalStyles />
+          <BrowserRouter>
+            <Routes>
+              <Route element={<Layout />}>
+                <Route index element={<Home />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/signup" element={<Signup />} />
+              </Route>
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </BrowserRouter>
+        </ThemeProvider>
+      </HelmetProvider>
+    </ApolloProvider>
   );
 }
 
