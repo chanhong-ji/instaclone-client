@@ -27,7 +27,12 @@ function App() {
                     !isLoggedIn ? <Login /> : <Navigate to="/" replace />
                   }
                 />
-                <Route path="/signup" element={<Signup />} />
+                <Route
+                  path="/signup"
+                  element={
+                    !isLoggedIn ? <Signup /> : <Navigate to="/" replace />
+                  }
+                />
               </Route>
               <Route path="*" element={<NotFound />} />
             </Routes>

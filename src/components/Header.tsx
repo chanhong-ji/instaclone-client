@@ -22,9 +22,14 @@ function Header() {
         {isLoggedIn ? (
           <Item onClick={getUserLogout}>Logout</Item>
         ) : (
-          <Item>
-            <Link to="/login">Login</Link>
-          </Item>
+          <>
+            <Item>
+              <Link to="/login">Login</Link>
+            </Item>
+            <Item>
+              <Link to="signup">Sign Up</Link>
+            </Item>
+          </>
         )}
       </Items>
     </Container>

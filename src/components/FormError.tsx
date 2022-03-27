@@ -4,8 +4,8 @@ const Text = styled.span`
   background-color: orange;
 `;
 
-function FormError({ text }: { text: string | null }) {
-  return <Text>{text}</Text>;
+function FormError({ text }: { text: string | undefined }) {
+  return text ? <Text>{text ? text : null}</Text> : null;
 }
 
 export default FormError;
