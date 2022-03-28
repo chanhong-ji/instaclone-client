@@ -15,7 +15,7 @@ export interface login_login {
 }
 
 export interface login {
-  login: login_login;
+  login: login_login | null;
 }
 
 export interface loginVariables {

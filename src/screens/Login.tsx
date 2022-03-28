@@ -1,5 +1,5 @@
 import { SubmitHandler, useForm } from "react-hook-form";
-import { Link, Location, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import FormBox from "../components/auth/FormBox";
 import AuthLayout from "../components/auth/AuthLayout";
 import BottomBox from "../components/auth/BottomBox";
@@ -59,14 +59,11 @@ function Login() {
 
   // after getting mutation data
   const onCompleted = (data: login) => {
-    const {
-      login: { ok, error, token },
-    } = data;
-    if (!ok) {
-      return setError("result", { message: error || undefined });
+    if (!data.login?.ok) {
+      return setError("result", { message: data.login?.error || undefined });
     }
-    if (token) {
-      getUserLogin(token);
+    if (data.login.token) {
+      getUserLogin(data.login.token);
     }
   };
 
