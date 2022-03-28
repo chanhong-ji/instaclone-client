@@ -1,11 +1,11 @@
 import styled from "styled-components";
 
 const Wrapper = styled.div`
-  width: 50px;
-  height: 50px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   overflow: hidden;
-  background-color: ${(p) => p.theme.blockColor};
+  background-color: grey;
   img {
     height: 100%;
     width: 100%;

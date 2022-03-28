@@ -2,7 +2,8 @@ import "styled-components";
 
 declare module "styled-components" {
   export interface DefaultTheme {
-    bgcolor: string;
+    bgColor: string;
     blockColor: string;
+    borderColor: string;
   }
 }

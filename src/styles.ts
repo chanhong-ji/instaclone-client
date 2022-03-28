@@ -2,13 +2,15 @@ import { createGlobalStyle, DefaultTheme } from "styled-components";
 import { reset } from "styled-reset";
 
 export const lightTheme: DefaultTheme = {
-  bgcolor: "gainsboro",
-  blockColor: "white",
+  bgColor: "#fafafa",
+  blockColor: "#ffffff",
+  borderColor: "#dbdbdb",
 };
 
 export const darkTheme: DefaultTheme = {
-  bgcolor: "grey",
+  bgColor: "grey",
   blockColor: "black",
+  borderColor: "white",
 };
 
 export const GlobalStyles = createGlobalStyle`
@@ -18,6 +20,12 @@ export const GlobalStyles = createGlobalStyle`
   }
   a {
     text-decoration: none;
+  }
+  body {
+    height: 100vh;
+    width: 100vw;
+    margin: 0 auto;
+    background-color: ${(props) => props.theme.bgColor};
   }
   ${reset}
 `;
