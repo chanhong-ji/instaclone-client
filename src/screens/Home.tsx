@@ -1,5 +1,5 @@
 import { gql, useQuery } from "@apollo/client";
-import Photo from "../components/Photo";
+import Photo from "../components/feed/Photo";
 import { seeFeed } from "../__generated__/seeFeed";
 
 const SEE_FEED = gql`
@@ -11,6 +11,7 @@ const SEE_FEED = gql`
       likes
       comments
       isMine
+      isLiked
       createdAt
       updatedAt
       user {
@@ -28,7 +29,7 @@ function Home() {
   return (
     <>
       {data?.seeFeed?.map((photo) => {
-        if (photo) return <Photo photo={photo} key={photo.id} />;
+        if (photo) return <Photo key={photo.id} {...photo} />;
       })}
     </>
   );

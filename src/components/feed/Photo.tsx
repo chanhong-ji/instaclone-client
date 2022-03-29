@@ -1,30 +1,27 @@
+import { gql, useMutation } from "@apollo/client";
 import {
   faBookmark,
   faComment,
-  faEllipsis,
+  faDotCircle,
   faFaceSmile,
   faHeart,
   faPaperPlane,
-} from "@fortawesome/free-solid-svg-icons";
+} from "@fortawesome/free-regular-svg-icons";
+import { faHeart as solidHeart } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import styled from "styled-components";
-import { seeFeed_seeFeed } from "../__generated__/seeFeed";
-import Avatar from "./Avatar";
-import { FatText } from "./shared";
+import { seeFeed_seeFeed } from "../../__generated__/seeFeed";
+import {
+  toggleLike,
+  toggleLikeVariables,
+} from "../../__generated__/toggleLike";
+import Avatar from "../Avatar";
+import { FatText } from "../shared";
 
 const Container = styled.article`
   background-color: ${(props) => props.theme.blockColor};
   border: 1px solid ${(props) => props.theme.borderColor};
   margin-top: 25px;
-  * {
-    svg {
-      path {
-        color: white;
-        stroke: black;
-        stroke-width: 50px;
-      }
-    }
-  }
 `;
 
 const Header = styled.div`
@@ -67,17 +64,9 @@ const Info = styled.div`
     display: flex;
     align-items: center;
     justify-content: space-between;
-    ${Column} {
-      &:first-child {
-        div {
-          margin-right: 20px;
-        }
-      }
-      display: flex;
-      > div {
-        height: 20px;
-      }
-    }
+  }
+  ${Column} {
+    display: flex;
   }
   ${Likes} {
     margin-top: 20px;
@@ -87,6 +76,16 @@ const Info = styled.div`
     span {
       font-size: 14px;
     }
+  }
+`;
+
+const ActiveBtn = styled.div`
+  height: 20px;
+  cursor: pointer;
+  &:nth-of-type(1),
+  &:nth-of-type(2),
+  &:nth-of-type(3) {
+    margin-right: 20px;
   }
 `;
 
@@ -108,46 +107,99 @@ const Comment = styled.div`
   }
 `;
 
-export default function Photo({ photo }: { photo: seeFeed_seeFeed }) {
+const TOGGLE_LIKE = gql`
+  mutation toggleLike($photoId: Int!) {
+    toggleLike(photoId: $photoId) {
+      ok
+      error
+    }
+  }
+`;
+
+export default function Photo({
+  id,
+  user,
+  file,
+  isLiked,
+  likes,
+  caption,
+}: seeFeed_seeFeed) {
+  const updateLikes = (cache: any, result: any) => {
+    const {
+      data: {
+        toggleLike: { ok },
+      },
+    } = result;
+    if (ok) {
+      cache.writeFragment({
+        id: `Photo:${id}`,
+        fragment: gql`
+          fragment updatedLike on Photo {
+            isLiked
+            likes
+          }
+        `,
+        data: {
+          likes: isLiked ? likes - 1 : likes + 1,
+          isLiked: !isLiked,
+        },
+      });
+    }
+  };
+
+  const [toggleLike] = useMutation<toggleLike, toggleLikeVariables>(
+    TOGGLE_LIKE,
+    {
+      variables: { photoId: id },
+      update: updateLikes,
+    }
+  );
+
   return (
     <Container>
       <Header>
         <div>
-          <Avatar imgUrl={photo.user.avatar || ""} />
-          <FatText>{photo.user.username}</FatText>
+          <Avatar imgUrl={user.avatar || ""} />
+          <FatText>{user.username}</FatText>
         </div>
-        <FontAwesomeIcon icon={faEllipsis} size="lg" />
+        <FontAwesomeIcon icon={faDotCircle} size="lg" />
       </Header>
       <Image>
-        <img src={photo.file} />
+        <img src={file} />
       </Image>
       <Info>
         <Icons>
           <Column>
-            <div>
-              <FontAwesomeIcon icon={faHeart} size="lg" />
-            </div>
-            <div>
+            <ActiveBtn
+              onClick={() => toggleLike()}
+              style={{ color: isLiked ? "#ed4956" : "black" }}
+            >
+              <FontAwesomeIcon
+                icon={isLiked ? solidHeart : faHeart}
+                size="lg"
+              />
+            </ActiveBtn>
+            <ActiveBtn>
               <FontAwesomeIcon icon={faComment} size="lg" />
-            </div>
-            <div>
+            </ActiveBtn>
+            <ActiveBtn>
               <FontAwesomeIcon icon={faPaperPlane} size="lg" />
-            </div>
+            </ActiveBtn>
           </Column>
           <Column>
-            <div>
+            <ActiveBtn>
               <FontAwesomeIcon icon={faBookmark} size="lg" />
-            </div>
+            </ActiveBtn>
           </Column>
         </Icons>
         <Likes>
           <FatText>좋아요</FatText>
-          <FatText> {photo.likes}</FatText>
+          <FatText> {likes}</FatText>
           <FatText>개</FatText>
         </Likes>
         <Explanation>
-          <FatText>{photo.user.username}</FatText>
-          <span> {photo.caption}</span>
+          <FatText>{user.username}</FatText>
+          <span> {caption}</span>
         </Explanation>
       </Info>
       <Comment>

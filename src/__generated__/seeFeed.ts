@@ -22,6 +22,7 @@ export interface seeFeed_seeFeed {
   likes: number;
   comments: number;
   isMine: boolean;
+  isLiked: boolean;
   createdAt: string;
   updatedAt: string;
   user: seeFeed_seeFeed_user;
