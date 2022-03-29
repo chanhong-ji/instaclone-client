@@ -17,6 +17,7 @@ import {
 } from "../../__generated__/toggleLike";
 import Avatar from "../Avatar";
 import { FatText } from "../shared";
+import Comments from "./Comments";
 
 const Container = styled.article`
   background-color: ${(props) => props.theme.blockColor};
@@ -89,7 +90,7 @@ const ActiveBtn = styled.div`
   }
 `;
 
-const Comment = styled.div`
+const CommentForm = styled.div`
   height: 55px;
   display: flex;
   align-items: center;
@@ -123,6 +124,8 @@ export default function Photo({
   isLiked,
   likes,
   caption,
+  commentCount,
+  comments,
 }: seeFeed_seeFeed) {
   const updateLikes = (cache: any, result: any) => {
     const {
@@ -201,15 +204,16 @@ export default function Photo({
           <FatText>{user.username}</FatText>
           <span> {caption}</span>
         </Explanation>
+        <Comments count={commentCount} comments={comments} />
       </Info>
-      <Comment>
+      <CommentForm>
         <div>
           <FontAwesomeIcon icon={faFaceSmile} size="lg" />
         </div>
         <form>
           <input placeholder="comment..." />
         </form>
-      </Comment>
+      </CommentForm>
     </Container>
   );
 }

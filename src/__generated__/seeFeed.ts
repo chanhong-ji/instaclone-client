@@ -7,6 +7,19 @@
 // GraphQL query operation: seeFeed
 // ====================================================
 
+export interface seeFeed_seeFeed_comments_user {
+  __typename: "User";
+  username: string;
+}
+
+export interface seeFeed_seeFeed_comments {
+  __typename: "Comment";
+  id: number;
+  payload: string;
+  isMine: boolean;
+  user: seeFeed_seeFeed_comments_user;
+}
+
 export interface seeFeed_seeFeed_user {
   __typename: "User";
   id: number;
@@ -20,7 +33,8 @@ export interface seeFeed_seeFeed {
   file: string;
   caption: string | null;
   likes: number;
-  comments: number;
+  commentCount: number;
+  comments: (seeFeed_seeFeed_comments | null)[];
   isMine: boolean;
   isLiked: boolean;
   createdAt: string;

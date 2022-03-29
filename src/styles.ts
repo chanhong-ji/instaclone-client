@@ -5,12 +5,14 @@ export const lightTheme: DefaultTheme = {
   bgColor: "#fafafa",
   blockColor: "#ffffff",
   borderColor: "#dbdbdb",
+  accentColor: "#1f93d6",
 };
 
 export const darkTheme: DefaultTheme = {
   bgColor: "grey",
   blockColor: "black",
   borderColor: "white",
+  accentColor: "#1f93d6",
 };
 
 export const GlobalStyles = createGlobalStyle`

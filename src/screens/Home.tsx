@@ -9,7 +9,15 @@ const SEE_FEED = gql`
       file
       caption
       likes
-      comments
+      commentCount
+      comments {
+        id
+        payload
+        isMine
+        user {
+          username
+        }
+      }
       isMine
       isLiked
       createdAt
