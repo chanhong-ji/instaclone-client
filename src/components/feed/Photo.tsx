@@ -134,17 +134,12 @@ export default function Photo({
       },
     } = result;
     if (ok) {
-      cache.writeFragment({
+      cache.modify({
         id: `Photo:${id}`,
-        fragment: gql`
-          fragment updatedLike on Photo {
-            isLiked
-            likes
-          }
-        `,
-        data: {
-          likes: isLiked ? likes - 1 : likes + 1,
-          isLiked: !isLiked,
+        fields: {
+          likes: (prev: number, { readField }: any) =>
+            readField("isLiked") ? prev - 1 : prev + 1,
+          isLiked: (prev: boolean) => !prev,
         },
       });
     }
