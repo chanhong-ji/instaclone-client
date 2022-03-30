@@ -3,7 +3,6 @@ import {
   faBookmark,
   faComment,
   faDotCircle,
-  faFaceSmile,
   faHeart,
   faPaperPlane,
 } from "@fortawesome/free-regular-svg-icons";
@@ -17,6 +16,7 @@ import {
 } from "../../__generated__/toggleLike";
 import Avatar from "../Avatar";
 import { FatText } from "../shared";
+import CommentForm from "./CommentForm";
 import Comments from "./Comments";
 
 const Container = styled.article`
@@ -87,24 +87,6 @@ const ActiveBtn = styled.div`
   &:nth-of-type(2),
   &:nth-of-type(3) {
     margin-right: 20px;
-  }
-`;
-
-const CommentForm = styled.div`
-  height: 55px;
-  display: flex;
-  align-items: center;
-  > div {
-    height: 20px;
-  }
-  > form {
-    width: 80%;
-    height: auto;
-    display: flex;
-    align-items: center;
-    input {
-      width: 100%;
-    }
   }
 `;
 
@@ -201,14 +183,7 @@ export default function Photo({
         </Explanation>
         <Comments count={commentCount} comments={comments} />
       </Info>
-      <CommentForm>
-        <div>
-          <FontAwesomeIcon icon={faFaceSmile} size="lg" />
-        </div>
-        <form>
-          <input placeholder="comment..." />
-        </form>
-      </CommentForm>
+      <CommentForm photoId={id} />
     </Container>
   );
 }
