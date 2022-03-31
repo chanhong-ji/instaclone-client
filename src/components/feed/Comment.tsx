@@ -1,11 +1,11 @@
 import { gql, useMutation } from "@apollo/client";
-import React from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import {
   deleteComment,
   deleteCommentVariables,
 } from "../../__generated__/deleteComment";
+import HashtagText from "../HashtagText";
 import { FatText } from "../shared";
 
 interface IComment {
@@ -19,16 +19,7 @@ interface IComment {
 const Container = styled.div`
   margin-top: 10px;
 `;
-const Payload = styled.span`
-  a {
-    color: ${(props) => props.theme.accentColor};
-    &:hover {
-      text-decoration: underline;
-    }
-  }
-`;
-
-const isHashtag = new RegExp(/#[ㄱ-ㅎ|ㅏ-ㅣ|가-힣\w]+/g);
+const Payload = styled.span``;
 
 const DELETE_COMMENT = gql`
   mutation deleteComment($commentId: Int!) {
@@ -69,24 +60,10 @@ function Comment({ id, photoId, author, payload, isMine }: IComment) {
 
   return (
     <Container>
-      <FatText>{author} </FatText>
-      <Payload>
-        {payload.split(" ").map((word, index) => {
-          const hashtagList = word.match(isHashtag);
-          if (hashtagList === null) {
-            return <React.Fragment key={index}>{word} </React.Fragment>;
-          } else {
-            return (
-              <React.Fragment key={index}>
-                <Link to={`/hashtags/${hashtagList[0].slice(1)}`}>
-                  {hashtagList[0]}
-                </Link>
-                {word.substring(hashtagList[0].length)}{" "}
-              </React.Fragment>
-            );
-          }
-        })}
-      </Payload>
+      <FatText>
+        <Link to={`/users/${author}`}>{author} </Link>
+      </FatText>
+      <Payload>{HashtagText(payload)}</Payload>
       {isMine ? (
         <button onClick={onCommentDelete}>Delete comment</button>
       ) : null}

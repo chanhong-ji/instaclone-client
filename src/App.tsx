@@ -6,6 +6,7 @@ import Home from "./screens/Home";
 import Login from "./screens/Login";
 import NotFound from "./screens/404";
 import Signup from "./screens/Signup";
+import Profile from "./screens/Profile";
 import { HelmetProvider } from "react-helmet-async";
 import { ApolloProvider, useReactiveVar } from "@apollo/client";
 import { client, isLoggedInVar } from "./apollo";
@@ -33,6 +34,7 @@ function App() {
                     !isLoggedIn ? <Signup /> : <Navigate to="/" replace />
                   }
                 />
+                <Route path="/users/:username" element={<Profile />} />
               </Route>
               <Route path="*" element={<NotFound />} />
             </Routes>

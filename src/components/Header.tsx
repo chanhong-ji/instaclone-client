@@ -43,7 +43,9 @@ function Header() {
             <Items>
               <Item onClick={getUserLogout}>Logout</Item>
               <Item>
-                <Avatar imgUrl={data?.me?.avatar || ""} />
+                <Link to={`/users/${data?.me?.username}`}>
+                  <Avatar imgUrl={data?.me?.avatar || ""} />
+                </Link>
               </Item>
             </Items>
           ) : (

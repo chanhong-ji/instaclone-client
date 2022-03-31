@@ -3,10 +3,12 @@ import styled from "styled-components";
 import Header from "../components/Header";
 
 const Main = styled.main`
-  max-width: 620px;
+  max-width: 935px;
   margin: 0 auto;
-  margin-top: 50px;
   background-color: ${(p) => p.theme.bgColor};
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 `;
 
 function Layout() {

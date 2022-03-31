@@ -8,6 +8,7 @@ import {
 } from "@fortawesome/free-regular-svg-icons";
 import { faHeart as solidHeart } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { seeFeed_seeFeed } from "../../__generated__/seeFeed";
 import {
@@ -15,6 +16,7 @@ import {
   toggleLikeVariables,
 } from "../../__generated__/toggleLike";
 import Avatar from "../Avatar";
+import HashtagText from "../HashtagText";
 import { FatText } from "../shared";
 import CommentForm from "./CommentForm";
 import Comments from "./Comments";
@@ -23,6 +25,7 @@ const Container = styled.article`
   background-color: ${(props) => props.theme.blockColor};
   border: 1px solid ${(props) => props.theme.borderColor};
   margin-top: 25px;
+  max-width: 615px;
 `;
 
 const Header = styled.div`
@@ -34,7 +37,7 @@ const Header = styled.div`
   > div {
     display: flex;
     align-items: center;
-    > div {
+    > a {
       :first-child {
         margin: 0 15px;
       }
@@ -139,8 +142,12 @@ export default function Photo({
     <Container>
       <Header>
         <div>
-          <Avatar imgUrl={user.avatar || ""} />
-          <FatText>{user.username}</FatText>
+          <Link to={`/users/${user.username}`}>
+            <Avatar imgUrl={user.avatar || ""} />
+          </Link>
+          <Link to={`/users/${user.username}`}>
+            <FatText>{user.username}</FatText>
+          </Link>
         </div>
         <FontAwesomeIcon icon={faDotCircle} size="lg" />
       </Header>
@@ -178,8 +185,10 @@ export default function Photo({
           <FatText>개</FatText>
         </Likes>
         <Explanation>
-          <FatText>{user.username}</FatText>
-          <span> {caption}</span>
+          <Link to={`/users/${user.username}`}>
+            <FatText>{user.username} </FatText>
+          </Link>
+          {caption && HashtagText(caption)}
         </Explanation>
         <Comments count={commentCount} comments={comments ?? []} photoId={id} />
       </Info>

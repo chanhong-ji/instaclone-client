@@ -22,6 +22,7 @@ export const GlobalStyles = createGlobalStyle`
   }
   a {
     text-decoration: none;
+    color: inherit;
   }
   body {
     height: 100vh;
