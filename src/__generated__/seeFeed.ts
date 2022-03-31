@@ -34,7 +34,7 @@ export interface seeFeed_seeFeed {
   caption: string | null;
   likes: number;
   commentCount: number;
-  comments: (seeFeed_seeFeed_comments | null)[];
+  comments: (seeFeed_seeFeed_comments | null)[] | null;
   isMine: boolean;
   isLiked: boolean;
   createdAt: string;

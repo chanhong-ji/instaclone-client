@@ -181,7 +181,7 @@ export default function Photo({
           <FatText>{user.username}</FatText>
           <span> {caption}</span>
         </Explanation>
-        <Comments count={commentCount} comments={comments} />
+        <Comments count={commentCount} comments={comments ?? []} photoId={id} />
       </Info>
       <CommentForm photoId={id} />
     </Container>

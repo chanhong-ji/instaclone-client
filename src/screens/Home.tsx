@@ -33,7 +33,6 @@ const SEE_FEED = gql`
 
 function Home() {
   const { data } = useQuery<seeFeed>(SEE_FEED);
-
   return (
     <>
       {data?.seeFeed?.map((photo) => {

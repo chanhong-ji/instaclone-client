@@ -15,9 +15,10 @@ const CommentCount = styled.span`
 interface IProps {
   count: number;
   comments: (seeFeed_seeFeed_comments | null)[];
+  photoId: number;
 }
 
-function Comments({ count, comments }: IProps) {
+function Comments({ count, comments, photoId }: IProps) {
   return (
     <Container>
       <CommentCount>
@@ -27,10 +28,12 @@ function Comments({ count, comments }: IProps) {
         if (comment !== null)
           return (
             <Comment
-              key={comment?.id}
-              author={comment?.user.username}
-              payload={comment?.payload}
-              isMine={comment?.isMine}
+              key={comment.id}
+              id={comment.id}
+              photoId={photoId}
+              author={comment.user.username}
+              payload={comment.payload}
+              isMine={comment.isMine}
             />
           );
       })}
