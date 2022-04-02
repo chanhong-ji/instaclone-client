@@ -1,12 +1,22 @@
-import { gql, useQuery } from "@apollo/client";
+import { gql, useMutation, useQuery } from "@apollo/client";
 import { faComment, faHeart } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
 import Avatar from "../components/Avatar";
+import PageTitle from "../components/PageTitle";
 import { PHOTO_FRAMENT } from "../fragment";
-import { seeProfile } from "../__generated__/seeProfile";
+import useUser from "../hooks/useUser";
+import { UpdateMutation } from "../types";
+import { followUser, followUserVariables } from "../__generated__/followUser";
+import { me, me_me } from "../__generated__/me";
+import { seeProfile, seeProfile_seeProfile } from "../__generated__/seeProfile";
+import {
+  unfollowUser,
+  unfollowUserVariables,
+  unfollowUser_unfollowUser,
+} from "../__generated__/unfollowUser";
 
 const SEE_PROFILE = gql`
   query seeProfile($username: String!) {
@@ -115,23 +125,104 @@ const PhotoBox = styled.div<IPhoto>`
   }
 `;
 
+const FOLLOW_USER = gql`
+  mutation followUser($username: String!) {
+    followUser(username: $username) {
+      ok
+    }
+  }
+`;
+
+const UNFOLLOW_USER = gql`
+  mutation unfollowUser($username: String!) {
+    unfollowUser(username: $username) {
+      ok
+    }
+  }
+`;
+
 function Profile() {
+  const getButton = (seeProfile: seeProfile_seeProfile) => {
+    if (seeProfile.isMe) {
+      return <button>프로필 편집</button>;
+    } else if (seeProfile.isFollowing) {
+      return <button onClick={() => unfollowUser()}>언팔로우</button>;
+    } else {
+      return <button onClick={() => followUser()}>팔로우</button>;
+    }
+  };
+
+  const followUpdate: UpdateMutation = (cache, result) => {
+    const {
+      followUser: { ok },
+    } = result.data;
+    if (!ok) return;
+    // Update profile user's follow
+    cache.modify({
+      id: `User:${data?.seeProfile?.username}`,
+      fields: {
+        totalFollowers: (prev: number) => prev + 1,
+        isFollowing: () => true,
+      },
+    });
+    // Update me user's follow
+    cache.modify({
+      id: `User:${meData?.me?.username}`,
+      fields: {
+        totalFollowing: (prev: number) => prev + 1,
+      },
+    });
+  };
+
+  const unfollowUpdate: UpdateMutation = (cache, result) => {
+    const {
+      unfollowUser: { ok },
+    } = result.data;
+    if (!ok) return;
+    cache.modify({
+      id: `User:${data?.seeProfile?.username}`,
+      fields: {
+        totalFollowers: (prev: number) => prev - 1,
+        isFollowing: () => false,
+      },
+    });
+    cache.modify({
+      id: `User:${meData?.me?.username}`,
+      fields: {
+        totalFollowing: (prev: number) => prev - 1,
+      },
+    });
+  };
+
   const { username } = useParams();
-  const { data } = useQuery<seeProfile>(SEE_PROFILE, {
+  const meData: me | undefined = useUser();
+  const { data, loading } = useQuery<seeProfile>(SEE_PROFILE, {
     variables: { username },
   });
+  const [followUser] = useMutation<followUser, followUserVariables>(
+    FOLLOW_USER,
+    {
+      variables: { username: data?.seeProfile?.username ?? "" },
+      update: followUpdate,
+    }
+  );
+  const [unfollowUser] = useMutation<unfollowUser, unfollowUserVariables>(
+    UNFOLLOW_USER,
+    {
+      variables: { username: data?.seeProfile?.username ?? "" },
+      update: unfollowUpdate,
+    }
+  );
 
   return (
     <>
+      <PageTitle title={loading ? "Loading..." : `${username}`} />
       <Header>
         <Avatar imgUrl={data?.seeProfile?.avatar ?? ""} />
         <Info>
           <Intro>
             <span>{data?.seeProfile?.username}</span>
-            <button>메시지 보내기</button>
-            <button>check</button>
-            <button>under</button>
-            <button>ellipsis</button>
+            {data?.seeProfile && getButton(data?.seeProfile)}
           </Intro>
           <Detail>
             <span>게시물 {data?.seeProfile?.photos?.length}</span>
