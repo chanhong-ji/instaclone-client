@@ -10,16 +10,6 @@ import FormError from "../components/FormError";
 import { getUserLogin } from "../apollo";
 import { login, loginVariables } from "../__generated__/login";
 
-interface IForm {
-  username: string;
-  password: string;
-  result: string;
-}
-interface CustomizedState {
-  username?: string;
-  password?: string;
-}
-
 export const LOGIN_MUTATION = gql`
   mutation login($username: String!, $password: String!) {
     login(username: $username, password: $password) {
@@ -32,7 +22,8 @@ export const LOGIN_MUTATION = gql`
 
 function Login() {
   const location = useLocation();
-  const state = location.state as CustomizedState;
+  const state = location.state as loginVariables;
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
@@ -40,7 +31,7 @@ function Login() {
     getValues,
     setError,
     clearErrors,
-  } = useForm<IForm>({
+  } = useForm<loginVariables & { result: string }>({
     mode: "onChange",
     defaultValues: {
       username: state?.username,
@@ -49,7 +40,7 @@ function Login() {
   });
 
   // form submit
-  const onSubmitValid: SubmitHandler<IForm> = () => {
+  const onSubmitValid: SubmitHandler<loginVariables> = () => {
     if (loading) return;
     const { username, password } = getValues();
     login({
@@ -59,11 +50,15 @@ function Login() {
 
   // after getting mutation data
   const onCompleted = (data: login) => {
-    if (!data.login?.ok) {
-      return setError("result", { message: data.login?.error || undefined });
+    const {
+      login: { ok, error, token },
+    } = data;
+    if (!ok) {
+      return setError("result", { message: data.login?.error || "" });
     }
-    if (data.login.token) {
-      getUserLogin(data.login.token);
+    if (token) {
+      getUserLogin(token);
+      navigate(0);
     }
   };
 

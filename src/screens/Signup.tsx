@@ -13,9 +13,6 @@ import {
 } from "../__generated__/createAccount";
 
 interface IForm {
-  username: string;
-  email: string;
-  password: string;
   passwordConfirm: string;
   result: string;
 }
@@ -41,27 +38,28 @@ function Signup() {
     setError,
     formState: { errors, isValid },
     clearErrors,
-  } = useForm<IForm>({ mode: "onChange" });
-
+  } = useForm<createAccountVariables & IForm>({ mode: "onChange" });
   const navigate = useNavigate();
+
+  const onCompleted = (data: createAccount) => {
+    const {
+      createAccount: { ok, error },
+    } = data;
+    if (!ok) return setError("result", { message: error || undefined });
+    const { username, password } = getValues();
+    navigate("/login", { state: { username, password } });
+  };
 
   // graphQL db
   const [createAccount, { loading }] = useMutation<
     createAccount,
     createAccountVariables
   >(CREATE_ACCOUNT, {
-    onCompleted: (data) => {
-      const {
-        createAccount: { ok, error },
-      } = data;
-      if (!ok) return setError("result", { message: error || undefined });
-      const { username, password } = getValues();
-      navigate("/login", { state: { username, password } });
-    },
+    onCompleted,
   });
 
   // form submit
-  const onSubmitValid: SubmitHandler<IForm> = async () => {
+  const onSubmitValid: SubmitHandler<createAccountVariables & IForm> = () => {
     if (loading) return;
     const { username, email, password, passwordConfirm } = getValues();
     // Check password Cofirm
